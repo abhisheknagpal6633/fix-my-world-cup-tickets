@@ -1,11 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { diagnosticTree, DiagnosticNode } from '../data/diagnosticTree';
-import { ArrowLeft, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import { diagnosticTree, DiagnosticNode } from "../data/diagnosticTree";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ChevronRight,
+  AlertCircle,
+} from "lucide-react";
+import VisualMockup from "./VisualMockup";
+import TipJar from "./TipJar";
 
 export default function Wizard() {
-  const [currentNodeId, setCurrentNodeId] = useState<string>('root');
+  const [currentNodeId, setCurrentNodeId] = useState<string>("root");
   const [history, setHistory] = useState<string[]>([]);
 
   const currentNode: DiagnosticNode = diagnosticTree[currentNodeId];
@@ -25,7 +32,7 @@ export default function Wizard() {
 
   const handleRestart = () => {
     setHistory([]);
-    setCurrentNodeId('root');
+    setCurrentNodeId("root");
   };
 
   return (
@@ -33,7 +40,7 @@ export default function Wizard() {
       {/* Wizard Header / Navigation */}
       <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
         {history.length > 0 ? (
-          <button 
+          <button
             onClick={handleBack}
             className="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
           >
@@ -42,9 +49,9 @@ export default function Wizard() {
         ) : (
           <span className="text-sm font-medium text-gray-400">Step 1</span>
         )}
-        
+
         {history.length > 0 && (
-          <button 
+          <button
             onClick={handleRestart}
             className="text-sm font-medium text-gray-500 hover:text-gray-900"
           >
@@ -63,7 +70,7 @@ export default function Wizard() {
         </p>
 
         {/* Render Options if it's a Question Node */}
-        {currentNode.type === 'question' && currentNode.options && (
+        {currentNode.type === "question" && currentNode.options && (
           <div className="space-y-3">
             {currentNode.options.map((option, index) => (
               <button
@@ -74,15 +81,37 @@ export default function Wizard() {
                 <span className="font-medium text-gray-800 group-hover:text-blue-900">
                   {option.label}
                 </span>
-                <ChevronRight size={20} className="text-gray-400 group-hover:text-blue-500 shrink-0 ml-4" />
+                <ChevronRight
+                  size={20}
+                  className="text-gray-400 group-hover:text-blue-500 shrink-0 ml-4"
+                />
               </button>
             ))}
           </div>
         )}
 
         {/* Render Steps & Cautions if it's a Solution Node */}
-        {currentNode.type === 'solution' && (
+        {currentNode.type === "solution" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            {/* Dynamic Visual Mockup Insertion based on active step node path */}
+            {currentNodeId === "proxy_trap_detected" && (
+              <div className="my-4">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 text-center">
+                  Visual Guide:
+                </p>
+                <VisualMockup type="proxy_email" />
+              </div>
+            )}
+
+            {currentNodeId === "guest_wallet_empty" && (
+              <div className="my-4">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 text-center">
+                  Visual Guide:
+                </p>
+                <VisualMockup type="wallet_sync" />
+              </div>
+            )}
+
             {currentNode.steps && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-5">
                 <h3 className="font-bold text-green-900 mb-4 flex items-center gap-2">
@@ -115,6 +144,7 @@ export default function Wizard() {
                 </ul>
               </div>
             )}
+            <TipJar />
           </div>
         )}
       </div>
