@@ -1,6 +1,6 @@
 'use client';
 
-import { Coffee, Heart } from 'lucide-react';
+import { Heart, Coffee } from 'lucide-react';
 
 export default function TipJar() {
   return (
@@ -12,22 +12,21 @@ export default function TipJar() {
         Did this save your match day?
       </h3>
       <p className="text-sm text-gray-600 mb-5 max-w-md mx-auto">
-        This tool is run independently by fans. If we helped you avoid hours on hold or secured your entry into the stadium, consider buying the dev a coffee!
+        This tool is run independently by fans. If we helped you avoid hours on hold or secured your entry into the stadium, consider supporting the dev!
       </p>
       
-      {/* Replace 'yourusername' with your actual BuyMeACoffee or Ko-fi username */}
       <a 
-        href="https://www.buymeacoffee.com/yourusername" 
+        href="https://ko-fi.com/abhisheknagpal" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-2 bg-[#FFDD00] hover:bg-[#FFD000] text-gray-900 font-bold py-3 px-6 rounded-lg transition-colors border border-yellow-400 shadow-sm"
+        className="inline-flex items-center justify-center gap-2 bg-[#FF5E5B] hover:bg-[#E05250] text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-sm"
       >
         <Coffee size={20} />
-        Buy me a coffee
+        Support on Ko-fi
       </a>
       
       <p className="text-[10px] text-gray-400 mt-4 uppercase tracking-wider">
-        Secured via Stripe / Apple Pay / Google Pay
+        Secured via PayPal / Apple Pay / Google Pay
       </p>
     </div>
   );
