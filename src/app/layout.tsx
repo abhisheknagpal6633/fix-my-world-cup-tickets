@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/react'; // <-- Added import
 
 export const metadata: Metadata = {
   title: 'Fix My World Cup Tickets - FWC2026 Diagnostic Tool',
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-gray-50 min-h-screen font-sans text-gray-900 antialiased">
         {children}
+        <Analytics /> {/* <-- Added component */}
       </body>
     </html>
   )
