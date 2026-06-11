@@ -14,6 +14,18 @@ export interface DiagnosticNode {
 export const diagnosticTree: Record<string, DiagnosticNode> = {
   root: {
     id: 'root',
+    title: 'Are you buying or selling tickets?',
+    description: 'Select your role to match the specific match-day error handling workflows.',
+    type: 'question',
+    options: [
+      { label: 'I am a BUYER (My tickets are missing or stuck)', nextNodeId: 'buyer_root' },
+      { label: 'I am a SELLER (StubHub is demanding Web Portal transfer / giving errors)', nextNodeId: 'seller_portal_trap' }
+    ]
+  },
+
+  // BUYER STARTING NODE
+  buyer_root: {
+    id: 'buyer_root',
     title: 'What ticket emergency are you facing?',
     description: 'Select your situation below to find the crowdsourced community fix instantly.',
     type: 'question',
@@ -24,7 +36,7 @@ export const diagnosticTree: Record<string, DiagnosticNode> = {
     ]
   },
 
-  // PATH 1: The Proxy Email Trap Branch
+  // PATH 1: The Proxy Email Trap Branch (Updated with Domain Blocks & Guest Pass Forwarding)
   proxy_trap_check: {
     id: 'proxy_trap_check',
     title: 'Did you check the confirmation email from your marketplace?',
@@ -37,20 +49,46 @@ export const diagnosticTree: Record<string, DiagnosticNode> = {
   },
   proxy_trap_detected: {
     id: 'proxy_trap_detected',
-    title: '🚨 Resolution: You are caught in the Proxy Email Trap',
-    description: 'Marketplaces mask buyer identities by generating a temporary proxy address (e.g., buyer.12345@stubhubproxy.com). FIFA sent the ticket invitation link to that proxy email, NOT your personal account.',
+    title: 'Did you get an "Access Restricted" or error when creating the proxy account?',
+    description: 'FIFA periodically throttles or restricts accounts using marketplace proxy domains (like @ticketoperations.com or @ticketmanager.com).',
+    type: 'question',
+    options: [
+      { label: 'Yes, I am blocked from registering the proxy email on the FIFA portal', nextNodeId: 'proxy_domain_blocked' },
+      { label: 'No, I can register it, I just need the steps to get my tickets', nextNodeId: 'proxy_trap_resolution' }
+    ]
+  },
+  proxy_trap_resolution: {
+    id: 'proxy_trap_resolution',
+    title: '🚨 Resolution: The Proxy Account Login & Guest Pass Rescue',
+    description: 'Marketplaces mask identities by creating a temporary proxy address. You must claim this account and then extract your tickets to safety.',
     type: 'solution',
     steps: [
       'Open your ticket marketplace dashboard (StubHub/Viagogo) and find your order details page.',
       'Locate the "Transfer/Proxy Email Address" generated specifically for this purchase.',
       'Log OUT of your personal account on the official FWC2026 Mobile Tickets App.',
       'Create a brand NEW FIFA Ticketing Account using that exact proxy email address.',
-      'Verify the new account via the confirmation link (which StubHub will forward to your personal inbox within 5-10 minutes).',
-      'Once logged into the FIFA app with the proxy email, your ticket QR codes will instantly populate.'
+      'Verify the new account via the confirmation link (StubHub forwards these verification emails directly to your personal inbox within 5-10 minutes).',
+      'Once logged in under the proxy account, your ticket QR codes will instantly render.',
+      '🔥 THE RESCUE STEP: Tap on the tickets, select "Manage Guests", assign the ticket to your REAL name, and enter your personal email address. This forwards the ticket out of the proxy trap and safely into your main personal wallet permanently.'
     ],
     cautions: [
-      'Do not attempt to change the proxy email inside the FIFA ticketing app before the tickets render—this can break the active cryptographically-signed token distribution payload.',
-      'Keep this temporary proxy login active until you are physically inside the stadium gates.'
+      'Do not attempt to change the email on the proxy account profile settings before your tickets render—this breaks the cryptographic data link payload.',
+      'Once you successfully forward the Guest Pass to your personal email, log out of the proxy and log back into your real account to verify the permanent transfer.'
+    ]
+  },
+  proxy_domain_blocked: {
+    id: 'proxy_domain_blocked',
+    title: '🚨 Resolution: Bypassing the @ticketoperations Domain Block',
+    description: 'FIFA ticketing portals block automated registrations from known reseller domains. You must force StubHub to deliver the tickets manually.',
+    type: 'solution',
+    steps: [
+      'Call StubHub/Viagogo phone support immediately (Do not use the web chat, as it uses automated bots).',
+      'State explicitly: "FIFA has blacklisted the @ticketoperations.com domain portal. I cannot register the account to claim my match tickets."',
+      'Demand that the support agent escalate your ticket to the Fulfillment Team to contact the seller directly.',
+      'The seller must cancel the proxy email route and transfer the ticket directly to your real, personal FIFA account email via the official FIFA Web Portal.'
+    ],
+    cautions: [
+      'If your match is less than 4 hours away, go directly to the Stadium Resolution Center / Help Desk with your StubHub proof of purchase. Staff can manually override entry restrictions if you show the domain error code.'
     ]
   },
   direct_email_error: {
@@ -110,7 +148,26 @@ export const diagnosticTree: Record<string, DiagnosticNode> = {
       'Ensure the time settings on the smartphone are set to "Automatic Time Sync (NTP)". If the local system clock mismatches the FIFA server time by even 60 seconds, the rotating security QR tokens will fail to render.'
     ],
     cautions: [
-      'Ensure the recipient is using the latest official update version from the iOS App Store or Google Play Store. Outdated builds completely block the new 2026 secure rolling ticket formats.'
+      'Ensure the recipient is using the latest official update version from the iOS App Store or Google Play Store. Outdated builds completely block the new secure rolling ticket formats.'
+    ]
+  },
+
+  // PATH 4: SELLER PORTAL TRAP (Brand New Intelligence Added)
+  seller_portal_trap: {
+    id: 'seller_portal_trap',
+    title: '🚨 Resolution: App Transfer vs. Web Portal Requirements',
+    description: 'StubHub automatically flags and penalizes sellers who complete transfers using the FWC Mobile App instead of the official FIFA Web Portal interface.',
+    type: 'solution',
+    steps: [
+      'Do NOT just hit "Transfer" inside the mobile app. App transfers are classified as "loans" and allow you to pull the ticket back, which breaks StubHub policy.',
+      'Open a desktop browser and log into the official FIFA Ticketing Web Portal.',
+      'Navigate to your ticket management section on the web platform.',
+      'Enter the buyer’s proxy email provided by StubHub directly into the Web Portal interface.',
+      'Completing the transfer via the Web Portal strips your account of the ownership seeds permanently, which triggers the automated "Transfer Complete" signal back to StubHub.',
+      'Take a screenshot of the web confirmation showing "Transferred to [Proxy Email]" to upload as your fulfillment insurance policy if StubHub tries to levy a penalty fee.'
+    ],
+    cautions: [
+      'If you already completed an app-based transfer, go into the app, click "Cancel Transfer," and immediately execute it again via the Web Portal interface instead to protect your seller payout.'
     ]
   }
 };
